@@ -57,7 +57,7 @@ process.on('uncaughtException', error => {
     log.print(log.info`Found ${classnames.length} class names`);
     log.print(log.info`Parsing...`);
     const parsedClassnames = classnames.map(_parse.parseClassname);
-    const classnameExports = `export default _classNames = ${parsedClassnames};`;
+    const classnameExports = `export default _classNames = [${parsedClassnames.map(item => `"${item.classname}"`)}]`;
     log.print(log.info`Generating...`);
     let code = _dedent.default`
     /**
