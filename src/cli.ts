@@ -1,7 +1,7 @@
 import Yargs from 'yargs';
 import dedent from 'dedent';
 import { extractClassnames } from './extract';
-import { parseClassname, getIdFromClassname } from './parse';
+import { parseClassname } from './parse';
 import { formatCode } from './format';
 import { isAbsolute, resolve } from 'path';
 import { promisify } from 'util';
@@ -60,14 +60,7 @@ process.on('uncaughtException', error => {
     log.print(log.info`Found ${classnames.length} class names`);
     log.print(log.info`Parsing...`);
     const parsedClassnames = classnames.map(parseClassname);
-    const classnameExports = parsedClassnames.map(
-      parsedClassname =>
-        `/** Constant for \`${
-          parsedClassname.classname
-        }\` */\nexport const ${getIdFromClassname(parsedClassname)} = "${
-          parsedClassname.classname
-        }";`
-    );
+    const classnameExports = `export default _classNames = ${parsedClassnames};`;
 
     log.print(log.info`Generating...`);
 
@@ -78,7 +71,7 @@ process.on('uncaughtException', error => {
      * @author tailwind-ts-gen
      */
 
-    ${classnameExports.join('\n')}
+    ${classnameExports}
     `;
     code = await formatCode(code, outputFilename, argv['prettier-config']);
 
